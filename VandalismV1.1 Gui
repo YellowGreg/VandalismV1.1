@@ -1,0 +1,806 @@
+
+
+game:GetService("StarterGui"):SetCore("SendNotification",{ 	Title = "Made By: Vandamcruzz",  	
+
+Text = "Team: AdvanceFalling",
+
+Duration = 4
+})
+
+local Library = loadstring(game:HttpGet("https://pastebin.com/raw/vff1bQ9F"))()
+
+local Window = Library.CreateLib("VandamlismV1.1 | Vandamcruzz#0223", "Ocean")
+
+local Tab = Window:NewTab("Home")
+
+local Section = Tab:NewSection("Welcome user")
+
+local Section = Tab:NewSection("Local Player")
+
+Section:NewTextBox("Walkspeed","Rare kavo UI walkspeed setter", function(txt) game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = txt
+end)
+
+Section:NewTextBox("FOV","Max FOV number 120", function(txt) game.Workspace.CurrentCamera.FieldOfView = txt
+end)
+
+Section:NewTextBox("JumpPower","Increases Jumping", function(txt)
+game.Players.LocalPlayer.Character.Humanoid.JumpPower = txt
+end)
+
+
+
+Section:NewButton("ShiftLock", "Play Like Pc", function()
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local ShiftlockStarterGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+
+--Properties:
+
+ShiftlockStarterGui.Name = "Shiftlock (StarterGui)"
+ShiftlockStarterGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ShiftlockStarterGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ShiftlockStarterGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BackgroundTransparency = 1.000
+ImageButton.Position = UDim2.new(0.921914339, 0, 0.552375436, 0)
+ImageButton.Size = UDim2.new(0.0636147112, 0, 0.0661305636, 0)
+ImageButton.SizeConstraint = Enum.SizeConstraint.RelativeXX
+ImageButton.Image = "http://www.roblox.com/asset/?id=182223762"
+
+-- Scripts:
+
+local function TLQOYN_fake_script() -- ImageButton.ShiftGUI 
+	local script = Instance.new('LocalScript', ImageButton)
+
+	local MobileCameraFramework = {}
+	local players = game:GetService("Players")
+	local runservice = game:GetService("RunService")
+	local CAS = game:GetService("ContextActionService")
+	local player = players.LocalPlayer
+	local character = player.Character or player.CharacterAdded:Wait()
+	local root = character:WaitForChild("HumanoidRootPart")
+	local humanoid = character.Humanoid
+	local camera = workspace.CurrentCamera
+	local button = script.Parent
+	
+	--Visiblity
+	uis = game:GetService("UserInputService")
+	ismobile = uis.TouchEnabled
+	button.Visible = ismobile
+	
+	local states = {
+		OFF = "rbxasset://textures/ui/mouseLock_off@2x.png",
+		ON = "rbxasset://textures/ui/mouseLock_on@2x.png"
+	}
+	local MAX_LENGTH = 900000
+	local active = false
+	local ENABLED_OFFSET = CFrame.new(1.7, 0, 0)
+	local DISABLED_OFFSET = CFrame.new(-1.7, 0, 0)
+	local function UpdateImage(STATE)
+		button.Image = states[STATE]
+	end
+	local function UpdateAutoRotate(BOOL)
+		humanoid.AutoRotate = BOOL
+	end
+	local function GetUpdatedCameraCFrame(ROOT, CAMERA)
+		return CFrame.new(root.Position, Vector3.new(CAMERA.CFrame.LookVector.X * MAX_LENGTH, root.Position.Y, CAMERA.CFrame.LookVector.Z * MAX_LENGTH))
+	end
+	local function EnableShiftlock()
+		UpdateAutoRotate(false)
+		UpdateImage("ON")
+		root.CFrame = GetUpdatedCameraCFrame(root, camera)
+		camera.CFrame = camera.CFrame * ENABLED_OFFSET
+	end
+	local function DisableShiftlock()
+		UpdateAutoRotate(true)
+		UpdateImage("OFF")
+		camera.CFrame = camera.CFrame * DISABLED_OFFSET
+		pcall(function()
+			active:Disconnect()
+			active = nil
+		end)
+	end
+	UpdateImage("OFF")
+	active = false
+	function ShiftLock()
+		if not active then
+			active = runservice.RenderStepped:Connect(function()
+				EnableShiftlock()
+			end)
+		else
+			DisableShiftlock()
+		end
+	end
+	local ShiftLockButton = CAS:BindAction("ShiftLOCK", ShiftLock, false, "On")
+	CAS:SetPosition("ShiftLOCK", UDim2.new(0.8, 0, 0.8, 0))
+	button.MouseButton1Click:Connect(function()
+		if not active then
+			active = runservice.RenderStepped:Connect(function()
+				EnableShiftlock()
+			end)
+		else
+			DisableShiftlock()
+		end
+	end)
+	return MobileCameraFramework
+	
+end
+coroutine.wrap(TLQOYN_fake_script)()
+local function OMQRQRC_fake_script() -- ShiftlockStarterGui.LocalScript 
+	local script = Instance.new('LocalScript', ShiftlockStarterGui)
+
+	local Players = game:GetService("Players")
+	local UserInputService = game:GetService("UserInputService")
+	local Settings = UserSettings()
+	local GameSettings = Settings.GameSettings
+	local ShiftLockController = {}
+	while not Players.LocalPlayer do
+		wait()
+	end
+	local LocalPlayer = Players.LocalPlayer
+	local Mouse = LocalPlayer:GetMouse()
+	local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+	local ScreenGui, ShiftLockIcon, InputCn
+	local IsShiftLockMode = true
+	local IsShiftLocked = true
+	local IsActionBound = false
+	local IsInFirstPerson = false
+	ShiftLockController.OnShiftLockToggled = Instance.new("BindableEvent")
+	local function isShiftLockMode()
+		return LocalPlayer.DevEnableMouseLock and GameSettings.ControlMode == Enum.ControlMode.MouseLockSwitch and LocalPlayer.DevComputerMovementMode ~= Enum.DevComputerMovementMode.ClickToMove and GameSettings.ComputerMovementMode ~= Enum.ComputerMovementMode.ClickToMove and LocalPlayer.DevComputerMovementMode ~= Enum.DevComputerMovementMode.Scriptable
+	end
+	if not UserInputService.TouchEnabled then
+		IsShiftLockMode = isShiftLockMode()
+	end
+	local function onShiftLockToggled()
+		IsShiftLocked = not IsShiftLocked
+		ShiftLockController.OnShiftLockToggled:Fire()
+	end
+	local initialize = function()
+		print("enabled")
+	end
+	function ShiftLockController:IsShiftLocked()
+		return IsShiftLockMode and IsShiftLocked
+	end
+	function ShiftLockController:SetIsInFirstPerson(isInFirstPerson)
+		IsInFirstPerson = isInFirstPerson
+	end
+	local function mouseLockSwitchFunc(actionName, inputState, inputObject)
+		if IsShiftLockMode then
+			onShiftLockToggled()
+		end
+	end
+	local function disableShiftLock()
+		if ScreenGui then
+			ScreenGui.Parent = nil
+		end
+		IsShiftLockMode = false
+		Mouse.Icon = ""
+		if InputCn then
+			InputCn:disconnect()
+			InputCn = nil
+		end
+		IsActionBound = false
+		ShiftLockController.OnShiftLockToggled:Fire()
+	end
+	local onShiftInputBegan = function(inputObject, isProcessed)
+		if isProcessed then
+			return
+		end
+		if inputObject.UserInputType ~= Enum.UserInputType.Keyboard or inputObject.KeyCode == Enum.KeyCode.LeftShift or inputObject.KeyCode == Enum.KeyCode.RightShift then
+		end
+	end
+	local function enableShiftLock()
+		IsShiftLockMode = isShiftLockMode()
+		if IsShiftLockMode then
+			if ScreenGui then
+				ScreenGui.Parent = PlayerGui
+			end
+			if IsShiftLocked then
+				ShiftLockController.OnShiftLockToggled:Fire()
+			end
+			if not IsActionBound then
+				InputCn = UserInputService.InputBegan:connect(onShiftInputBegan)
+				IsActionBound = true
+			end
+		end
+	end
+	GameSettings.Changed:connect(function(property)
+		if property == "ControlMode" then
+			if GameSettings.ControlMode == Enum.ControlMode.MouseLockSwitch then
+				enableShiftLock()
+			else
+				disableShiftLock()
+			end
+		elseif property == "ComputerMovementMode" then
+			if GameSettings.ComputerMovementMode == Enum.ComputerMovementMode.ClickToMove then
+				disableShiftLock()
+			else
+				enableShiftLock()
+			end
+		end
+	end)
+	LocalPlayer.Changed:connect(function(property)
+		if property == "DevEnableMouseLock" then
+			if LocalPlayer.DevEnableMouseLock then
+				enableShiftLock()
+			else
+				disableShiftLock()
+			end
+		elseif property == "DevComputerMovementMode" then
+			if LocalPlayer.DevComputerMovementMode == Enum.DevComputerMovementMode.ClickToMove or LocalPlayer.DevComputerMovementMode == Enum.DevComputerMovementMode.Scriptable then
+				disableShiftLock()
+			else
+				enableShiftLock()
+			end
+		end
+	end)
+	LocalPlayer.CharacterAdded:connect(function(character)
+		if not UserInputService.TouchEnabled then
+			initialize()
+		end
+	end)
+	if not UserInputService.TouchEnabled then
+		initialize()
+		if isShiftLockMode() then
+			InputCn = UserInputService.InputBegan:connect(onShiftInputBegan)
+			IsActionBound = true
+		end
+	end
+	enableShiftLock()
+	return ShiftLockController
+	
+end
+coroutine.wrap(OMQRQRC_fake_script)()
+end)
+
+--- Player
+--- Buttons
+Section:NewButton("Inf Jump", "Gives you inf jumps", function()
+    local InfiniteJumpEnabled = true
+game:GetService("UserInputService").JumpRequest:connect(function()
+	if InfiniteJumpEnabled then
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+	end
+end)
+end)
+
+Section:NewButton("Xray(Need Keyboard and press E)", "WallXray lol", function()
+local xrayHotkey = Enum.KeyCode.E                                                                 
+
+local uis = game:GetService("UserInputService")
+
+
+local xrayOn = false
+
+
+uis.InputBegan:Connect(function(inp, processed)
+	
+	
+	if processed then return end
+	
+	
+	if inp.KeyCode == xrayHotkey then
+		
+		
+		xrayOn = not xrayOn
+		
+		
+		for i, descendant in pairs(workspace:GetDescendants()) do
+				
+			if descendant:IsA("BasePart") then
+				
+				if xrayOn then
+					
+					if not descendant:FindFirstChild("OriginalTransparency") then
+						
+						local originalTransparency = Instance.new("NumberValue")
+						originalTransparency.Name = "OriginalTransparency"
+						originalTransparency.Value = descendant.Transparency
+						originalTransparency.Parent = descendant
+					end
+					
+					descendant.Transparency = 0.5
+					
+				else
+					descendant.Transparency = descendant.OriginalTransparency.Value
+				end
+			end
+		end
+	end
+end)
+end)
+
+
+
+
+
+local Section = Tab:NewSection("R15 Animation")
+
+Section:NewButton("Zombie Animation", "R15 animation", function()
+while true do
+    wait(1)
+    for i, player in ipairs(game.Players:GetChildren()) do
+    local Animate = game.Players.LocalPlayer.Character.Animate
+Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+game.Players.LocalPlayer.Character.Humanoid.Jump = false
+    end
+end
+end)
+Section:NewButton("Cartoony Animation", "R15 animation", function()
+while true do
+    wait(1)
+    for i, player in ipairs(game.Players:GetChildren()) do
+    local Animate = game.Players.LocalPlayer.Character.Animate
+Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+game.Players.LocalPlayer.Character.Humanoid.Jump = false
+    end
+end
+end)
+
+Section:NewButton("Gravity (Need Keyboard And Press E)", "Moon Jump lol", function()
+--[[
+A distribution of Andrheyplayz_Officalyt
+June 13, 2020
+
+Simply inject this script into any game using a Lua injector like JJSploit
+then press e while in game to turn gravity on and off. 
+]]
+
+if _G.WRDGravitySwitchStarted == nil then
+	_G.WRDGravitySwitchStarted = true
+	
+	--Gets the player's mouse
+	local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+
+	--Waits until the player's mouse is found
+	repeat wait() until mouse
+
+	--Toggles
+	mouse.KeyDown:connect(function(key)
+		if key:lower() == "e" then
+			if workspace.Gravity > 0 then
+				--Turns off gravity
+				workspace.Gravity = 0
+				game.StarterGui:SetCore("SendNotification", {Title="Zero Gravity"; Text="Andrheyplayz_officalyt"; Duration=1;})
+			else 
+				--Reset to default
+				workspace.Gravity = 196.2
+				game.StarterGui:SetCore("SendNotification", {Title="Normal Gravity"; Text="Andrheyplayz_officalyt"; Duration=1;})
+			end
+		end
+	end)
+end
+
+game.StarterGui:SetCore("SendNotification", {Title="Andrheyplayz_officalyt"; Text="The Gravity Switch exploit is ready!\nPress \"e\" to toggle"; Duration=5;})
+end)
+
+
+
+local Section = Tab:NewSection("For Games")
+
+Section:NewButton("Fly V2", "Makes you Fly", function()
+ loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()
+end)
+
+Section:NewButton("Walkspeed", "increases your Walkspeed", function()
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50  --Normal 33--
+end)
+
+Section:NewButton("Kick Yourself", "Kick yourself emergencys only", function()
+      loadstring(game:HttpGet("https://gist.githubusercontent.com/testttbqwebg/adc0db730f5dfca0d8dbdb81f3b65391/raw/b0443888c4399af5a297cb1100a4749c65705711/qweqw", true))()
+end)
+
+local Tab = Window:NewTab("Hub")
+
+local Section = Tab:NewSection("Gui")
+
+Section:NewButton("Vhub", "Vhub script", function()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/itsyaboivincentt5315/script/main/VHub.txt'),true))()
+end)
+
+Section:NewButton("Artemis hub", "Artemis hub script", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/iBWWxP51"))()
+end)
+
+Section:NewButton("RedGhost HUB", "UseFul GUI 1", function()
+   loadstring(game:HttpGet('https://pastebin.com/raw/WFKSRG6m'))();
+end)
+
+Section:NewButton("B_Genesis HUB", "Useful for games", function()
+   loadstring(game:HttpGet('https://raw.githubusercontent.com/raw-scriptpastebin/raw/main/B_Genesis'))()
+end)
+
+Section:NewButton("Pro Hub", "New Gui", function()
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/Kindasua/v.1-beta/main/Fixed%20bugs%20v.1%20beta"), true))()
+end)
+
+Section:NewButton("RemX Gui", "Old. But Op", function()
+   loadstring(game:HttpGet(('https://raw.githubusercontent.com/Henry887/RemX-Script-Hub/main/main.lua'),true))()
+end)
+
+Section:NewButton("Heart Ui", "Old But Op", function()
+   loadstring(game:GetObjects("rbxassetid://1313915586")[1].Source)()
+end)
+
+local Tab = Window:NewTab("Pet Sim X")
+local Section = Tab:NewSection("PetSimX")
+
+Section:NewButton("Saza hub", "a Op pet simulator x gui", function()
+_G.AuthKey = "312cc6e8-0a82-4bfb-909d-f42d508d8d42" 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RobIoxScripts/GUI/main/load.lua"))()
+end)
+
+local Tab = Window:NewTab("Bedwars")
+local Section = Tab:NewSection("Bedwars")
+
+Section:NewButton("Bedwars gui", "Bedwars gui", function()
+game.StarterGui:SetCore("SendNotification", { Title = "XRAYON"; Text = "LOADED SUCCESSFULLY! ENJOY"; Duration = 10; }) 
+loadstring(game:HttpGet('https://raw.githubusercontent.com/dorukqpx/Xrayon/main/xrayo.lua'))();
+end)
+
+Section:NewButton("BedWar GUI 1", "Bedwars GUI 1", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/dorukqpx/Xrayon/main/xrayonv2.lua", true))()
+end)
+
+Section:NewButton("BedWars GUI 2", "Soft Bed", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/iWxWxX2M",true))()
+end)
+
+Section:NewButton("BedWars 3", "Bedwars 3", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/joeengo/Future/main/loadstring.lua', true))()
+end)
+
+Section:NewButton("Bedwar 4", "Credit to Owner", function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/NTDCore/NightbedX/main/NightbedScriptLol/mostNightbed.lua", true))()
+end)
+
+Section:NewButton("Bedwar 5", "Credit to Owner", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua", true))()
+end)
+
+Section:NewButton("Bedwar 6", "Credit to Owner", function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/8pmX8/moonlight.cool/main/mlobfuscated.lua'))();
+end)
+
+Section:NewButton("Bedwar 7", "Credit to Owner", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/ELCkygpv", true))()
+end)
+
+Section:NewButton("Bedwar 8", "Credit to the owner", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/JNHHGaming123/JNHHGaming123/main/JN%20HH%20Gaming%20Bedwars%20V5",true))()
+end)
+
+local Tab = Window:NewTab("Brookhaven")
+local Section = Tab:NewSection("Brookhaven")
+
+Section:NewButton("Ice hub", "Brookhaven gui", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/IceMael7/NewIceHub/main/Brookhaven"))()
+end)
+
+local Tab = Window:NewTab("Mm2")
+local Section = Tab:NewSection("Murder Mystery 2")
+
+Section:NewButton("MM2 Gui", "use keyboard to access some things", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Drifter0507/scripts/main/mm2", true))()
+end)
+
+Section:NewButton("MM2 GUI 1", "use keyboard for some ", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Drifter0507/scripts/main/mm2", true))()
+end)
+
+Section:NewButton("MM2 GUI 2", "use keyboard for some ", function()
+   loadstring(game:GetObjects("rbxassetid://4001118261")[1].Source)()
+end)
+
+Section:NewButton("MM2 GUI 3", "use keyboard for some ", function()
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/manimcool21/Keyboard-FE/main/Protected%20(3).lua'),true))()
+local KeyboardguiWarriorRoberrVersion = Instance.new("ScreenGui")
+local Drag = Instance.new("Frame")
+local Close = Instance.new("TextButton")
+
+--Properties:
+
+KeyboardguiWarriorRoberrVersion.Name = "Keyboard gui WarriorRoberr Version"
+KeyboardguiWarriorRoberrVersion.Parent = game.CoreGui
+KeyboardguiWarriorRoberrVersion.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Drag.Name = "Drag"
+Drag.Parent = KeyboardguiWarriorRoberrVersion
+Drag.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Drag.BorderSizePixel = 0
+Drag.Position = UDim2.new(0.147916675, 0, 0.0593749993, 0)
+Drag.Size = UDim2.new(0, 270, 0, 30)
+Drag.Active = true
+Drag.Draggable = true
+
+Close.Name = "Close"
+Close.Parent = Drag
+Close.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(0.999839723, 0, -0.00729167089, 0)
+Close.Size = UDim2.new(0, 30, 0, 30)
+Close.Font = Enum.Font.SourceSans
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.TextSize = 35.000
+Close.MouseButton1Click:Connect(function()
+	KeyboardguiWarriorRoberrVersion:Destroy()
+end)
+game.CoreGui["BUNB0yBUN BOARD"].KeyBoard.Parent = Drag
+game.CoreGui["BUNB0yBUN BOARD"]:Destroy()
+game.CoreGui["Keyboard gui WarriorRoberr Version"].Drag.KeyBoard.Bunb0ybun.Text = "MADE BY WARRIORROBERR BETTER VERSION "
+game.CoreGui["Keyboard gui WarriorRoberr Version"].Drag.KeyBoard.Position = UDim2.new(0, 0, 0, 35)
+game.CoreGui["Keyboard gui WarriorRoberr Version"].Drag.KeyBoard.Bunb0ybun.TextSize = 10
+end)
+
+Section:NewButton("MM2 GUI 4", "This is new", function()
+   loadstring(game:HttpGet(('https://pastebin.com/raw/Aynzy8DW'),true))()
+end)
+
+Section:NewButton("MM2 GUI 5", "This is new", function()
+loadstring(game:HttpGet("https://pastebin.com/fedNtyaL"))()
+end)
+
+Section:NewButton("MM2 GUI 6", "This is new", function()
+loadstring(game:HttpGet("https://pastebin.com/aCrpc6SW"))()
+end)
+
+Section:NewButton("MM2 GUI 7", "This is new", function()
+loadstring(game:HttpGet('https://pastebin.com/raw/DihfjHj2'))()
+end)
+
+local Tab = Window:NewTab("Tower Of Hell")
+local Section = Tab:NewSection("ToH")
+
+Section:NewButton("ToH Admin", "Its only admin command", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/TwomadJR/nto/main/admiin"))()
+end)
+
+Section:NewButton("ToH GUI 1", "So Op for TOH", function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/BbVHjH56'))()
+end)
+
+Section:NewButton("ToH Gui 2", "ButtonInfo", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/2dgeneralspam1/scripts-and-stuff/master/scripts/garfield%20hub", true))()
+end)
+
+Section:NewButton("ToH Gui 3", "ButtonInfo", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/03koios/TowerOfHell/main/README.md"))()
+end)
+
+Section:NewButton("ToH Gui 4", "ButtonInfo", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/iiProductionz/Floater-Scripts/main/WaifuEdition/Tower%20Of%20Hell"))()
+end)
+
+local Tab = Window:NewTab("Build a Boat")
+local Section = Tab:NewSection("Build A Boat")
+
+Section:NewButton("Build a Boat 1", "havent played", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/ThunderZ-HUB/HUB/main/Script"))()
+end)
+
+Section:NewButton("Build a Boat 2", "havent play", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/StenDirt/Trash-Game/main/Script.lua"))()
+end)
+
+Section:NewButton("Build a Boat 3", "Dino-Hub", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/SandaFrosty/Dino-Script/main/Build-Boat-For-Treasure"))()
+end)
+
+Section:NewButton("Build a Boat 4", "idk", function()
+_G.autofarm = true loadstring(game:HttpGet('https://gist.githubusercontent.com/cod2rx/d2a7e436d3af135d787529141e6485cc/raw/5bb4df0a94b0a3cf06f0c87a25cb6859e56d23e3/BABFT%2520Autofarm.lua'))()
+end)
+
+Section:NewButton("Build a Boat 5", "Bored", function()
+_G.Color = Color3.fromRGB(255, 255, 255)
+loadstring(game:HttpGet"https://rawscripts.net/raw/SAZA-HUB_496")()
+end)
+
+
+local Tab = Window:NewTab("Prison Life")
+local Section = Tab:NewSection("Prison Life")
+
+Section:NewButton("Prison Life GUI 1", "New TeddHub", function()
+setclipboard("https://discord.gg/pTSg34Jz3n")
+print("copied the discord")
+if game.PlaceId == 155615604 then
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+             local Window = Library.CreateLib("Teddy hub", "Serpent")
+            local Credits = Window:NewTab("Main")
+            local CreditsSection = Credits:NewSection("Credits")
+            CreditsSection:NewLabel("Scripts Made By: Teddy")
+            CreditsSection:NewLabel("and thank to mdr to help me on it!)")
+
+
+    local Tab = Window:NewTab("Ui")
+    local UiSection = Tab:NewSection("Toggle")
+    UiSection:NewKeybind("Toggle Ui", "this will hide the ui(does not inculde animation)", Enum.KeyCode.RightControl, function()
+        Library:ToggleUI()
+    end)
+
+    local Tab = Window:NewTab("LocalPlayer")
+    local LocalPlayerSection = Tab:NewSection("Movement")
+   LocalPlayerSection:NewSlider("Walkspeed", "if you sprint, you have to adjust again", 500, 16, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+    end)
+ LocalPlayerSection:NewSlider("JumpPower", "Turns you into a pogostick.", 500, 50, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+    end)                              
+                                                                                                                                   
+    
+    local Tab = Window:NewTab("Combat")
+    local CombatSection = Tab:NewSection("Combat")
+    CombatSection:NewButton("Become a american!", "M4A1 Not inculded.", function()
+                print("All Weapons Given!")
+                workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.giver["Remington 870"].ITEMPICKUP)
+                workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.giver.M9.ITEMPICKUP)
+                workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.single.Hammer.ITEMPICKUP)
+                workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.giver["AK-47"].ITEMPICKUP)
+        print(currentOption)
+    end)
+    CombatSection:NewButton("HitboxExpander", "Hitbox Ui", function()
+        loadstring(game:HttpGet(("https://gameovers.net/Scripts/Free/HitboxExpander/main.lua"),true))()
+    end)
+            local Misc = Window:NewTab("Miscellaneous")
+            local MiscSection = Misc:NewSection("Miscellaneous")
+            MiscSection:NewButton("Remove all Doors", "Removes Every Door!", function()
+                for i,d in pairs(game.Workspace.Doors:GetChildren()) do
+                    if d.ClassName == "Model" then
+                        d:Destroy()
+                    end
+                end
+            end)
+            MiscSection:NewButton("Remove All Fences", "All Fences Will Be Removed!", function()
+                for i,l in pairs(game.Workspace["Prison_Fences"]:GetChildren()) do
+                    if l.Name == "fence" then
+                        l:Destroy()
+                    end
+                end
+            end)
+        
+            MiscSection:NewButton("Remove All Gates", "All Fences Will Be Removed!", function()
+                game.Workspace["Prison_Fences"]["Prison_Gate"]:Destroy()
+                game.Workspace["Prison_Fences"]["gate"]:Destroy()
+            end)
+        
+    
+    local Tab = Window:NewTab("Admin")
+    local AdminSection = Tab:NewSection("madness")
+    AdminSection:NewButton("Septex", "Gives You Commands!", function()
+                loadstring(game:HttpGet(('https://raw.githubusercontent.com/XTheMasterX/Scripts/Main/PrisonLife'),true))()
+            end)
+            AdminSection:NewButton("PrisonBreaker V1.5", "Prisonbreaker GUI", function()
+                loadstring(game:HttpGet(('https://pastebin.com/raw/QcNge4QY'),true))()
+            end)
+             AdminSection:NewButton("Inf Yield", "gives you more cmds", function()
+                loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
+            end)
+            local AdminSection = Tab:NewSection("Septex Commands")
+        AdminSection:NewLabel(":rank player - gives player commands")
+            AdminSection:NewLabel(":kill player - kills player")
+            AdminSection:NewLabel(":sa player - spam arrest player")
+            AdminSection:NewLabel(":crim player - makes player criminal")
+            AdminSection:NewLabel(":bring player - brings player")
+            AdminSection:NewLabel(":goto player - makes you go to player")
+            AdminSection:NewLabel(":void player - voids player")
+            AdminSection:NewLabel(":key player - gives player keycard")
+            AdminSection:NewLabel(":cuffs player - gives player handcuffs")
+            AdminSection:NewLabel(":trap player - traps player")
+            AdminSection:NewLabel(":yard player - brings player to yard")
+            AdminSection:NewLabel(":base player - brings player to criminal base")
+            AdminSection:NewLabel(":prison player - brings player to prison")
+            AdminSection:NewLabel(":lk - loopkills player")
+            AdminSection:NewLabel(":aura - gives player kill aura")
+            AdminSection:NewLabel(":virus - makes anyone who touch player dies")
+            AdminSection:NewLabel(":oof - kills everyone")
+            AdminSection:NewLabel(":spike - lag spike")
+            AdminSection:NewLabel(":bspike - big lag spike")
+            AdminSection:NewLabel(":lag - lags the server")
+            AdminSection:NewLabel(":crash - crashes the server")
+            AdminSection:NewLabel(":tk player - teleport you to player and kills them")
+            AdminSection:NewLabel(":ltk player - loops tpkill")
+            AdminSection:NewLabel(":logs - prints all used cmds")
+            local Tab = Window:NewTab("Troll")
+            local TrollSection = Tab:NewSection("FLY")
+            TrollSection:NewButton("Flycar (AirWav)", "superman but car", function()
+                loadstring(game:HttpGet(('https://pastebin.com/raw/VLBwAgwT'),true))()
+            end)
+    
+            local TrollSection = Tab:NewSection("Dances")
+            TrollSection:NewButton("NullWare V3", "i went through links for you", function()
+                loadstring(game:HttpGet(('https://pastebin.com/raw/jUxDxBsp'),true))()
+            end)
+
+    local Tab = Window:NewTab("Teleports")
+    local TeleportsSection = Tab:NewSection("be even faster than flash")
+    TeleportsSection:NewButton("Outside of prison", "Teleports You outside of the prison!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(451.6684265136719, 98.0399169921875, 2216.338134765625)
+            end)
+            TeleportsSection:NewButton("Prison Yard", "Teleports You to the Prison Yard", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(736.4671630859375, 97.99992370605469, 2517.583740234375)
+            end)
+            TeleportsSection:NewButton("Kitchen", "Teleports You to the Kitchen!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(906.641845703125, 99.98993682861328, 2237.67333984375)
+            end)
+            TeleportsSection:NewButton("Prison Cells", "Teleports You to the Prison Cells!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(919.5551147460938, 99.98998260498047, 2441.700927734375)
+            end)
+            TeleportsSection:NewButton("Surveilance Room", "Teleports You to the Surveilance Room!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(795.251953125, 99.98998260498047, 2327.720703125)
+            end)
+            TeleportsSection:NewButton("Break Room", "Teleports You to the Break Room!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(800.0896606445312, 99.98998260498047, 2266.71630859375)
+            end)
+            TeleportsSection:NewButton("Police Armory", "Teleports You to the Police Armory!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(837.2889404296875, 99.98998260498047, 2270.99658203125)
+            end)
+            TeleportsSection:NewButton("Police Room", "Teleports to to the Police Room", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(836.5386352539062, 99.98998260498047, 2320.604248046875)
+            end)
+            TeleportsSection:NewButton("Cafeteria", "Teleports you to the Cafeteria!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(918.994873046875, 99.98993682861328, 2325.73095703125)
+            end)
+            TeleportsSection:NewButton("Criminal Base Inside", "Teleports you to the Criminal Base Inside!", function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-975.8451538085938, 109.32379150390625, 2053.11376953125)
+    end)
+    
+    coroutine.wrap(UVUZD_fake_script)()
+game.Player.LocalPlayer:kick("go to prison bro")
+
+    else
+
+end
+end)
+
+
+Section:NewButton("PrisonLife Admin 1",  "Gives you septex admin", function()
+   loadstring(game:HttpGet(('https://raw.githubusercontent.com/XTheMasterX/Scripts/Main/PrisonLife'),true))()
+end)
+
+Section:NewButton("PrisonLife gui 2",  "Gives you Op stuff lol", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/wMagw9Cn", true))()
+end)
+
+Section:NewButton("PrisonLife Admin 2", "New and op", function()
+loadstring(game:HttpGet('https://pastebinp.com/raw/dt7JbaH5'))()
+end)
+
+Section:NewButton("PrisonLife gui 3", "Gui lol", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/dJ6tcE7h", true))()
+end)
+
+local Tab = Window:NewTab("Credits")
+
+local Section = Tab:NewSection("Made by Vandamcruzz")
+local Section = Tab:NewSection("Team: AdvanceFalling")
+
+Section:NewButton("Copy Discord", "Join Pls", function()
+setclipboard("https://discord.gg/eBGG84zCgE")
+end)
+
+--End--
+Frame.Parent.Active = true
+Frame.Parent.Draggable = true
